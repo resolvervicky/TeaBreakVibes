@@ -1,0 +1,98 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build Windows EXE & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Get version
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $ver = $tag.TrimStart('v')
+          echo "TAG=$tag" >> $env:GITHUB_OUTPUT
+          echo "VER=$ver" >> $env:GITHUB_OUTPUT
+
+      - name: Restore
+        working-directory: ChaiIdle
+        run: dotnet restore
+
+      - name: Publish (single-file, self-contained, win-x64)
+        working-directory: ChaiIdle
+        run: |
+          dotnet publish -c Release -r win-x64 `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true `
+            /p:DebugType=embedded `
+            /p:PublishTrimmed=false `
+            /p:Version=${{ steps.version.outputs.VER }}
+
+      - name: Package release ZIP
+        shell: pwsh
+        run: |
+          $ver     = "${{ steps.version.outputs.VER }}"
+          $staging = "release\OruTeaDa-v$ver"
+          New-Item -ItemType Directory -Path $staging | Out-Null
+
+          Copy-Item "ChaiIdle\bin\Release\net8.0-windows\win-x64\publish\ChaiIdle.exe" `
+                    "$staging\OruTeaDa.exe"
+
+          if (Test-Path "ChaiIdle\Assets") {
+              Copy-Item "ChaiIdle\Assets" "$staging\Assets" -Recurse
+          }
+
+          @"
+          OruTeaDa v$ver — Chai Break Reminder
+          ======================================
+          Double-click OruTeaDa.exe to start. No installer needed.
+          Windows 10/11 x64.
+          "@ | Set-Content "$staging\README.txt"
+
+          Compress-Archive -Path "$staging\*" `
+                           -DestinationPath "release\OruTeaDa-v$ver-win-x64.zip" -Force
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "OruTeaDa v${{ steps.version.outputs.VER }} ☕"
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: |
+            ## OruTeaDa v${{ steps.version.outputs.VER }} — Chai Break Reminder
+
+            A chai break popup for developers who sit idle too long.
+
+            ### What's new
+            - Premium Glassmorphism UI
+            - Animated SVG Tea Cup
+            - Language-aware audio dialogues
+
+            ### Installation
+            1. Download `OruTeaDa-v${{ steps.version.outputs.VER }}-win-x64.zip`
+            2. Extract anywhere
+            3. Double-click `OruTeaDa.exe`
+
+            ### Requirements
+            - Windows 10 / 11 (64-bit)
+          files: |
+            release/OruTeaDa-v${{ steps.version.outputs.VER }}-win-x64.zip
