@@ -1,42 +1,22 @@
-.gitignore for ChaiIdle
-
-# Build output
-bin/
-obj/
+# .NET
+[Bb]in/
+[Oo]bj/
 *.user
-*.suo
-*.sln.iml
+*.userosscache
+*.sln.docstates
 
-# IDE
+# Visual Studio
 .vs/
 .vscode/
-*.swp
-*.swo
-*~
 
-# Runtime
+# Build and Release
+release/
+*.zip
+
+# Temporary files
 *.log
 *.tmp
 
-# Debug
-.DS_Store
+# OS files
 Thumbs.db
-
-# NuGet
-packages/
-.nuget/
-
-# User files
-*.orig
-*.bak
-
-# Build artifacts
-*.exe
-*.dll
-*.pdb
-*.nupkg
-
-# Don't ignore these!
-!Assets/
-!README.md
-!BUILD.md
+Desktop.ini

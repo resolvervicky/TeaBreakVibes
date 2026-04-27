@@ -1,168 +1,74 @@
-# ChaiIdle (OruTeaDa) - Indian IT Engineer's Chai Break Desktop Toy
+# ☕ OruTeaDa (ChaiIdle)
 
-```
- ☕ OruTeaDa ☕
- Da, chai break time ba!
-```
+**OruTeaDa** is a premium, meme-inspired idle reminder for developers. It monitors your system activity and gently (or humorously) reminds you to take a chai/tea break when you've been inactive for too long. 
 
-## 🍵 What is ChaiIdle?
-
-**ChaiIdle** is a fun, viral desktop toy for Indian IT engineers. After you've been coding for 5 minutes without moving the mouse or keyboard, a cute animated tea break appears on your screen with:
-
-- ✨ Animated tea being poured (ASMR style)
-- 🎵 Realistic tea-pouring sound
-- 💬 Viral Tamil/Tanglish/Hinglish dialogue ("Oru tea potta dhan sariya irukkum da!")
-- 🍵 Multiple tea types (chai, filter coffee, juice)
-- 🔕 System tray control (Pause, Resume, Settings, Exit)
-- ⚡ Super lightweight (<50MB RAM)
-- 🎬 One-click "Share Chai Moment" to X/Instagram
-
-## 🚀 Installation
-
-### Option 1: Download .exe (Recommended - No Installation)
-1. Download `ChaiIdle.exe` from Releases
-2. Double-click to run
-3. It hides to system tray automatically
-4. Right-click tray icon to manage
-
-### Option 2: Build from Source
-
-**Requirements:**
-- .NET 8 SDK or later ([download](https://dotnet.microsoft.com/download/dotnet/8.0))
-- Visual Studio Code or Visual Studio (optional)
-
-**Build:**
-```bash
-cd ChaiIdle
-dotnet build -c Release
-```
-
-**Run:**
-```bash
-dotnet run
-```
-
-**Publish as Single Exe:**
-```bash
-dotnet publish -c Release -r win-x64 \
-  --self-contained true \
-  /p:PublishSingleFile=true \
-  /p:IncludeNativeLibrariesForSelfExtract=true \
-  /p:DebugType=embedded
-```
-
-The single `.exe` will be in `bin/Release/net8.0-windows/win-x64/publish/`
-
-## 🎮 How to Use
-
-1. **Run ChaiIdle** - It minimizes to system tray immediately
-2. **Code normally** - Keep working, take a break, whatever!
-3. **Idle for 5 minutes** - After 5 min of no mouse/keyboard activity:
-   - Transparent overlay appears
-   - Cute tea animation plays
-   - Random dialogue shows (Tamil/English/Hinglish)
-   - ASMR sound plays
-4. **Click anywhere or press any key** - Overlay closes, back to work!
-
-## ⚙️ Configuration
-
-Settings are stored in: `%APPDATA%\ChaiIdle\settings.json`
-
-```json
-{
-  "idleMinutes": 5,
-  "enabledLanguages": ["Tamil", "English", "Hinglish"],
-  "teaTypes": ["chai", "filter_coffee", "juice"],
-  "soundEnabled": true,
-  "autoShareEnabled": false,
-  "isPaused": false,
-  "customDialogues": {}
-}
-```
-
-### Add Custom Dialogues
-
-Edit `%APPDATA%\ChaiIdle\dialogues.json` and add your own memes:
-
-```json
-{
-  "Tamil": [
-    "Boss, oru cutting chai venum da!",
-    "Enna machan, code la stuck ah?"
-  ],
-  "Hinglish": [
-    "Chai time, debugging time!",
-    "Loop se break, chai se peace!"
-  ]
-}
-```
-
-## 🔧 System Tray Menu
-
-Right-click the tea icon in system tray:
-
-- **⚙️ Settings** - Open preferences (coming soon: full UI)
-- **⏸️ Pause** - Temporarily disable chai breaks
-- **▶️ Resume** - Re-enable chai breaks
-- **ℹ️ About** - View version info
-- **❌ Exit** - Close ChaiIdle
-
-## 📊 Features
-
-| Feature | Status |
-|---------|--------|
-| Idle Detection (P/Invoke) | ✅ Done |
-| Transparent Overlay | ✅ Done |
-| Multi-language Dialogues | ✅ Done |
-| ASMR Sound | ✅ Done (awaiting MP3) |
-| System Tray | ✅ Done |
-| JSON Settings | ✅ Done |
-| Single-file .exe | ✅ Ready |
-| Settings UI | 🔄 Coming Soon |
-| Share to Social Media | 🔄 Coming Soon |
-| Custom Tea Animations | 🔄 Coming Soon |
-
-## 🐛 Troubleshooting
-
-**Overlay not showing?**
-- Check if paused (right-click tray > Resume)
-- Verify idle time setting (default: 5 min)
-- Check console: `ChaiIdle.exe 2>error.log`
-
-**No sound?**
-- Ensure `pour.mp3` is in Assets folder
-- Check `settings.json` → `"soundEnabled": true`
-- System volume isn't muted
-
-**High CPU usage?**
-- Idle detector checks every 10 seconds (normal)
-- Report CPU issues on GitHub
-
-## 📝 License
-
-Free to use, share, and fork! Made with chai for Indian devs. ☕
-
-## 🙏 Contributing
-
-Found a bug? Have a funny dialogue idea? Fork it, fix it, PR it!
-
-**Ideas:**
-- More tea animations
-- Voice-over instead of text
-- Achievement system ("You saved 100 hours of work this week!")
-- Leaderboard with friends
-- Dark mode
-- Dock/taskbar notifications
-
-## 🎬 Viral Ideas
-
-- **#ChaiIdle Challenge** - Screenshot your most hilarious dialogue and tweet it
-- **Custom Dialogues** - Add your team's inside jokes
-- **Share Button** - Auto-generate meme images for Twitter
-- **Stats Mode** - Track how many chai breaks you've had
+Built with **WPF (.NET 8)**, it features a modern glassmorphism UI, smooth animations, and language-aware audio dialogues.
 
 ---
 
-**Made by Chennai devs, for Chennai devs. 🍵 Oru tea vadikka sollrindhu thiyanum ba!**
+## ✨ Features
 
-Questions? Issues? Chai recommendations? Open an issue!
+- **💎 Modern UI**: Frosted glass (glassmorphism) design with a dark, premium aesthetic.
+- **🎨 Custom Animations**: Hand-drawn SVG tea cup with animated steam and ripple effects.
+- **🌍 Multi-language Dialogues**: Supports Tamil, English, and Hinglish memes and reminders.
+- **🎵 Smart Audio**: Intelligent audio rotation that picks random clips based on your preferred language.
+- **⏰ Customizable Idle Timer**: Set your own break threshold from 1 to 30 minutes.
+- **🚀 Single-File Portability**: Runs as a self-contained executable with no installation required.
+
+---
+
+## 🛠️ Installation & Usage
+
+1. **Download**: Grab the latest version from the [Releases](https://github.com/ResolverVicky/ChaiIdle/releases) page.
+2. **Run**: Extract the ZIP and double-click `OruTeaDa.exe`.
+3. **Tray Menu**: The app lives in your system tray. Right-click the ☕ icon to:
+   - Open **Settings** to adjust idle time and language.
+   - **Pause/Resume** the idle detector.
+   - **Exit** the application.
+
+---
+
+## 🎵 Customizing Audio
+
+You can add your own audio clips to make the reminders even more personal!
+
+- **Folder Structure**:
+  ```
+  Assets/
+  └── Audio/
+      ├── Tamil/    <-- Add Tamil .mp3 files here
+      ├── English/  <-- Add English .mp3 files here
+      └── Hinglish/ <-- Add Hinglish .mp3 files here
+  ```
+- **How it works**: The app will randomly pick an MP3 from the folder matching your selected language.
+
+---
+
+## 🏗️ Development
+
+### Prerequisites
+- .NET 8.0 SDK
+
+### Build & Run
+```powershell
+# Clone the repo
+git clone https://github.com/ResolverVicky/ChaiIdle.git
+cd ChaiIdle
+
+# Run the app
+dotnet run
+```
+
+### Create a Release
+Use the provided script to generate a single-file ZIP package:
+```powershell
+.\release.ps1 -Version "1.0.0"
+```
+
+---
+
+## 📜 License
+MIT License. Feel free to use, modify, and share!
+
+---
+Made with ❤️ and plenty of ☕ by **ResolverVicky**.
