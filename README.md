@@ -1,5 +1,7 @@
 # ☕ OruTeaDa (ChaiIdle)
 
+![OruTeaDa Banner](ChaiIdle/Assets/tea_pour.png)
+
 **OruTeaDa** is a premium, meme-inspired idle reminder for developers. It monitors your system activity and gently reminds you to take a chai break when you've been inactive for too long.
 
 Built with **WPF (.NET 8)**, it features a modern glassmorphism UI, smooth animations, and language-aware audio dialogues.
