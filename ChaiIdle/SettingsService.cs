@@ -17,6 +17,9 @@ namespace ChaiIdle
             [JsonProperty("idleMinutes")]
             public int IdleMinutes { get; set; } = 5;
 
+            [JsonProperty("preferredLanguage")]
+            public string PreferredLanguage { get; set; } = "Tamil";
+
             [JsonProperty("enabledLanguages")]
             public List<string> EnabledLanguages { get; set; } = new() { "Tamil", "English", "Hinglish" };
 
@@ -122,22 +125,20 @@ namespace ChaiIdle
         {
             var dialogues = new List<string>();
             var allDialogues = GetDefaultDialogues();
+            var prefLang = _currentSettings.PreferredLanguage;
 
-            foreach (var language in _currentSettings.EnabledLanguages)
+            if (allDialogues.TryGetValue(prefLang, out var langDialogues))
             {
-                if (allDialogues.TryGetValue(language, out var langDialogues))
-                {
-                    dialogues.AddRange(langDialogues);
-                }
-
-                // Add custom dialogues if any
-                if (_currentSettings.CustomDialogues.TryGetValue(language, out var customDialogues))
-                {
-                    dialogues.AddRange(customDialogues);
-                }
+                dialogues.AddRange(langDialogues);
             }
 
-            return dialogues.Count > 0 ? dialogues : GetDefaultDialogues()["Tamil"];
+            // Add custom dialogues for this language if any
+            if (_currentSettings.CustomDialogues.TryGetValue(prefLang, out var customDialogues))
+            {
+                dialogues.AddRange(customDialogues);
+            }
+
+            return dialogues.Count > 0 ? dialogues : allDialogues["Tamil"];
         }
 
         public string GetRandomDialogue()
@@ -166,48 +167,48 @@ namespace ChaiIdle
                     {
                         "Oru tea potta dhan sariya irukkum da 🍵",
                         "Boss, oru cutting chai venum da",
-                        "Da, system ku rest koduthutiya?",
+                        "Da, system-ku rest koduthutiya?",
                         "Chai break time ba!",
-                        "Enna machan, code ku tired ah?",
-                        "Filter coffee la irundhu start pannalam da",
+                        "Enna machan, code-ku tired-ah?",
+                        "Filter coffee-la irundhu start pannalam da",
                         "Oru tea, oru life da!",
-                        "Code bug la irundhu break pottu chai kudi da",
-                        "Chai vanda peace irukum da",
-                        "Seri da, oru tea potti veipom da!",
-                        "Debug ku chai necessary da",
+                        "Code bug-la irundhu break pottu chai kudi da",
+                        "Chai vandha peace-ah irukum da",
+                        "Seri da, oru tea potti vaippom da!",
+                        "Debug-ku chai necessary da",
                         "Stack overflow? Chai overflow da!",
-                        "Infinite loop? Chai loop veipom da!",
-                        "Oru tea vanda sari ayidum da",
-                        "Boss, production server chai pothukkudha?",
-                        "Chai ku priority highest ba!",
-                        "Merge conflict kurandhukka chai kudi da",
-                        "PR review ku chai mandatory da",
-                        "Deployment la irundhu back off, chai kudi da",
-                        "Memory leak la irundhu chai heal ba!"
+                        "Infinite loop? Chai loop vaippom da!",
+                        "Oru tea vandha sari ayidum da",
+                        "Boss, production server chai-ah kudhikkudha?",
+                        "Chai-ku priority highest ba!",
+                        "Merge conflict kuraikka chai kudi da",
+                        "PR review-ku chai mandatory da",
+                        "Deployment-la irundhu back off, chai kudi da",
+                        "Memory leak-la irundhu chai heal pannum ba!"
                     }
                 },
                 {
                     "English", new List<string>
                     {
                         "Time for a chai break! 🍵",
-                        "Boss, take a tea break",
-                        "Is your system as tired as you?",
-                        "Chai break time everyone!",
-                        "Your code needs a break, and so do you",
-                        "Coffee fix incoming",
-                        "One tea, one life",
-                        "Bugs are better debugged with chai",
-                        "Peace comes with a cup",
-                        "Let's brew a solution",
-                        "Debug mode: chai edition",
+                        "Boss, take a tea break.",
+                        "Is your system as tired as you are?",
+                        "Chai break time, everyone!",
+                        "Your code needs a break, and so do you.",
+                        "Caffeine fix incoming!",
+                        "One tea, one life.",
+                        "Bugs are better debugged with chai.",
+                        "Peace comes with a cup.",
+                        "Let's brew a solution.",
+                        "Debug mode: Chai Edition.",
                         "Stack overflow? Chai overflow!",
-                        "Infinite loops need chai loops",
-                        "A cup of chai fixes everything",
-                        "Production running? Sip this chai",
-                        "Chai is top priority",
-                        "Merge conflicts taste better with chai",
-                        "PR reviews require chai",
-                        "Deployment needs a break like you",
+                        "Infinite loops need chai loops.",
+                        "A cup of chai fixes everything.",
+                        "Production running? Sip this chai.",
+                        "Chai is the top priority.",
+                        "Merge conflicts taste better with chai.",
+                        "PR reviews require chai.",
+                        "Deployment needs a break, just like you.",
                         "Memory leaks? Chai heals!"
                     }
                 },
@@ -215,37 +216,37 @@ namespace ChaiIdle
                     "Hinglish", new List<string>
                     {
                         "Bhai, chai break time hai 🍵",
-                        "Code se break lo, chai lo",
-                        "Ek chai, sab theek ho jayega",
-                        "System ko rest do, chai lo",
-                        "Chai pee lo, stress kam ho jayega",
+                        "Code se break lo, chai lo.",
+                        "Ek chai, sab theek ho jayega.",
+                        "System ko rest do, chai lo.",
+                        "Chai pee lo, stress kam ho jayega.",
                         "Coding se thak gaye? Chai time!",
-                        "Bug fix hota hai chai se",
-                        "Caffeine + Coding = Success",
-                        "Chai ke bina life incomplete hai",
+                        "Bug fix hota hai chai se.",
+                        "Caffeine + Coding = Success.",
+                        "Chai ke bina life incomplete hai.",
                         "Break time, chai time!",
-                        "Deadline se pehle chai zaroor",
-                        "Meeting ke baad chai zaroori hai",
-                        "Logic chalti hai chai se",
-                        "Documentation + chai = perfection",
-                        "Deployment se pehle chai mandatory",
-                        "Testing ke time chai zaroori",
-                        "Refactoring bada aasan hai chai se",
-                        "Performance tuning + chai = magic",
-                        "Security patches need chai support",
-                        "DevOps pipeline + chai = smooth!"
+                        "Deadline se pehle chai zaroor.",
+                        "Meeting ke baad chai zaroori hai.",
+                        "Logic chalti hai chai se.",
+                        "Documentation + Chai = Perfection.",
+                        "Deployment se pehle chai mandatory.",
+                        "Testing ke time chai zaroori.",
+                        "Refactoring bada aasan hai chai se.",
+                        "Performance tuning + Chai = Magic.",
+                        "Security patches need chai support.",
+                        "DevOps pipeline + Chai = Smooth!"
                     }
                 },
                 {
                     "Telugu", new List<string>
                     {
                         "Chai break time ra! 🍵",
-                        "Boss, chhay tesuko",
-                        "Code se tired? Chai kada ocheyandi",
-                        "System ko rest ichey, chai kudey",
-                        "Chai vunda peace untundi ra",
-                        "Bug fix avutundi chai vunda",
-                        "Stress podam chai tho",
+                        "Boss, chhay teesuko.",
+                        "Code-to tired-ah? Chai-ki ocheyandi.",
+                        "System-ku rest ichey, chai kudu.",
+                        "Chai unte peace untundi ra.",
+                        "Bug fix avutundi chai unte.",
+                        "Stress poddi chai-tho.",
                         "Chai pee, back to work!",
                         "Break time, chai time kada!",
                         "Oka chhay, sab theek!"

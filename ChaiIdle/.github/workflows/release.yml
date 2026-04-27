@@ -1,0 +1,112 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'          # triggers on v1.0.0, v1.2.3, etc.
+
+permissions:
+  contents: write     # needed to create releases
+
+jobs:
+  release:
+    name: Build Windows EXE & Publish Release
+    runs-on: windows-latest
+
+    steps:
+      # ── Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Setup .NET 8 ─────────────────────────────────────────────────────
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # ── Extract version from tag ──────────────────────────────────────────
+      - name: Get version
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"        # e.g. v1.0.0
+          $ver = $tag.TrimStart('v')              # e.g. 1.0.0
+          echo "TAG=$tag" >> $env:GITHUB_OUTPUT
+          echo "VER=$ver" >> $env:GITHUB_OUTPUT
+
+      # ── Restore & Publish single-file EXE ────────────────────────────────
+      - name: Restore
+        working-directory: ChaiIdle
+        run: dotnet restore
+
+      - name: Publish (single-file, self-contained, win-x64)
+        working-directory: ChaiIdle
+        run: |
+          dotnet publish -c Release -r win-x64 `
+            --self-contained true `
+            /p:PublishSingleFile=true `
+            /p:IncludeNativeLibrariesForSelfExtract=true `
+            /p:DebugType=embedded `
+            /p:PublishTrimmed=false `
+            /p:Version=${{ steps.version.outputs.VER }}
+
+      # ── Package EXE + Assets into ZIP ────────────────────────────────────
+      - name: Package release ZIP
+        shell: pwsh
+        run: |
+          $ver     = "${{ steps.version.outputs.VER }}"
+          $staging = "release\OruTeaDa-v$ver"
+          New-Item -ItemType Directory -Path $staging | Out-Null
+
+          Copy-Item "ChaiIdle\bin\Release\net8.0-windows\win-x64\publish\ChaiIdle.exe" `
+                    "$staging\OruTeaDa.exe"
+
+          if (Test-Path "ChaiIdle\Assets") {
+              Copy-Item "ChaiIdle\Assets" "$staging\Assets" -Recurse
+          }
+
+          @"
+          OruTeaDa v$ver — Chai Break Reminder
+          ======================================
+          Double-click OruTeaDa.exe to start. No installer needed.
+          Windows 10/11 x64.
+          "@ | Set-Content "$staging\README.txt"
+
+          Compress-Archive -Path "$staging\*" `
+                           -DestinationPath "release\OruTeaDa-v$ver-win-x64.zip" -Force
+
+      # ── Create GitHub Release ─────────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "OruTeaDa v${{ steps.version.outputs.VER }} ☕"
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: |
+            ## OruTeaDa v${{ steps.version.outputs.VER }} — Chai Break Reminder
+
+            A chai break popup for developers who sit idle too long.
+
+            ### What's new
+            - See commit history for full changelog.
+
+            ### Installation
+            1. Download `OruTeaDa-v${{ steps.version.outputs.VER }}-win-x64.zip`
+            2. Extract anywhere
+            3. Double-click `OruTeaDa.exe`
+            4. It lives in your system tray — configure idle time & language from the tray menu
+
+            ### Requirements
+            - Windows 10 / 11 (64-bit)
+            - No .NET installation needed (self-contained)
+
+            ### Audio (optional)
+            Drop `.mp3` files in:
+            ```
+            Assets\Audio\Tamil\
+            Assets\Audio\English\
+            Assets\Audio\Hinglish\
+            ```
+          files: |
+            release/OruTeaDa-v${{ steps.version.outputs.VER }}-win-x64.zip
