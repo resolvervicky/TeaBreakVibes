@@ -1,0 +1,17 @@
+{
+  "idleMinutes": 1,
+  "enabledLanguages": [
+    "Tamil",
+    "English",
+    "Hinglish"
+  ],
+  "teaTypes": [
+    "chai",
+    "filter_coffee",
+    "juice"
+  ],
+  "customDialogues": {},
+  "soundEnabled": true,
+  "autoShareEnabled": false,
+  "isPaused": false
+}

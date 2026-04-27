@@ -1,0 +1,42 @@
+.gitignore for ChaiIdle
+
+# Build output
+bin/
+obj/
+*.user
+*.suo
+*.sln.iml
+
+# IDE
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Runtime
+*.log
+*.tmp
+
+# Debug
+.DS_Store
+Thumbs.db
+
+# NuGet
+packages/
+.nuget/
+
+# User files
+*.orig
+*.bak
+
+# Build artifacts
+*.exe
+*.dll
+*.pdb
+*.nupkg
+
+# Don't ignore these!
+!Assets/
+!README.md
+!BUILD.md

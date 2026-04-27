@@ -1,0 +1,39 @@
+<Window x:Class="ChaiIdle.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ChaiIdle - OruTeaDa"
+        Width="400"
+        Height="600"
+        WindowStartupLocation="CenterScreen"
+        Background="WhiteSmoke">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+            <TextBlock Text="☕ OruTeaDa - ChaiIdle ☕" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" TextAlignment="Center"/>
+            <TextBlock Text="Running in system tray..." FontSize="16" Margin="0,0,0,10" TextAlignment="Center"/>
+            <TextBlock Text="Idle for 5 minutes to see a chai break!" FontSize="14" Foreground="Gray" TextAlignment="Center"/>
+            
+            <StackPanel Margin="0,20,0,0">
+                <DockPanel>
+                    <TextBlock Text="Idle Threshold (Minutes):" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="IdleMinutesLabel" Text="5" FontWeight="Bold" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    <Slider x:Name="IdleSlider" Minimum="1" Maximum="30" TickFrequency="1" IsSnapToTickEnabled="True" Value="5" Margin="10,0" ValueChanged="IdleSlider_ValueChanged"/>
+                </DockPanel>
+            </StackPanel>
+
+            <TextBlock x:Name="StatusText" Text="Status: Initializing..." FontSize="12" Foreground="Blue" Margin="0,10,0,0" TextAlignment="Center"/>
+            <TextBlock x:Name="DiagnosticText" Text="Idle Time: 0s / Threshold: 0s" FontSize="10" Foreground="DarkGray" Margin="0,5,0,0" TextAlignment="Center"/>
+            <TextBlock Text="(This window hides automatically)" FontSize="12" Foreground="DarkGray" Margin="0,20,0,0" TextAlignment="Center"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Save &amp; Close" Click="SaveAndMinimize" Padding="15,10" FontSize="14" Background="#FFD700" FontWeight="Bold" Margin="0,0,10,0"/>
+                <Button Content="🧪 Test Overlay" Click="TestOverlay_Click" Padding="15,10" FontSize="14" Background="#E0E0E0" FontWeight="Bold"/>
+            </StackPanel>
+
+            <GroupBox Header="Debug Logs" Margin="0,20,0,0" Height="200">
+                <ScrollViewer x:Name="LogScrollViewer">
+                    <TextBox x:Name="LogText" IsReadOnly="True" Background="Black" Foreground="LightGreen" FontFamily="Consolas" FontSize="10" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</Window>
