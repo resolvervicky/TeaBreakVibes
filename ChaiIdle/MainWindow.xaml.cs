@@ -1,7 +1,11 @@
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using Microsoft.Win32;
+using System.Threading.Tasks;
 
 namespace ChaiIdle
 {
@@ -186,6 +190,84 @@ namespace ChaiIdle
             {
                 MessageBox.Show($"Failed to save: {ex.Message}");
             }
+        }
+
+        private async void UploadAudio_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var ofd = new OpenFileDialog
+                {
+                    Filter = "Audio files (*.mp3)|*.mp3",
+                    Title  = "Select a short chai reminder (MP3)"
+                };
+
+                if (ofd.ShowDialog() != true) return;
+
+                string filePath = ofd.FileName;
+                var info = new FileInfo(filePath);
+
+                // 1. Validate File Size (Max 1MB)
+                if (info.Length > 1024 * 1024)
+                {
+                    AudioStatus.Text = "❌ Too large (>1MB)";
+                    AudioStatus.Foreground = Brushes.Tomato;
+                    return;
+                }
+
+                // 2. Validate Duration (Max 15s)
+                AudioStatus.Text = "⌛ Checking length...";
+                AudioStatus.Foreground = Brushes.SkyBlue;
+
+                double durationSec = await GetAudioDuration(filePath);
+                if (durationSec > 15 || durationSec <= 0)
+                {
+                    AudioStatus.Text = $"❌ Too long ({durationSec:F1}s)";
+                    AudioStatus.Foreground = Brushes.Tomato;
+                    return;
+                }
+
+                // 3. Copy to Assets
+                string lang = (LanguageCombo.SelectedItem as ComboBoxItem)?.Content.ToString() ?? "Tamil";
+                string destDir = Path.Combine(AppContext.BaseDirectory, "Assets", "Audio", lang);
+                
+                if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+
+                string destFile = Path.Combine(destDir, $"custom_{DateTime.Now:yyyyMMdd_HHmmss}.mp3");
+                File.Copy(filePath, destFile, true);
+
+                AudioStatus.Text = $"✅ Uploaded ({durationSec:F1}s)";
+                AudioStatus.Foreground = Brushes.LightGreen;
+                Logger.Log($"Custom audio added to {lang}: {Path.GetFileName(destFile)}");
+            }
+            catch (Exception ex)
+            {
+                AudioStatus.Text = "❌ Upload failed";
+                AudioStatus.Foreground = Brushes.Tomato;
+                Logger.Error($"Upload error: {ex.Message}");
+            }
+        }
+
+        private Task<double> GetAudioDuration(string path)
+        {
+            var tcs = new TaskCompletionSource<double>();
+            var player = new MediaPlayer();
+
+            player.MediaOpened += (s, e) =>
+            {
+                double sec = player.NaturalDuration.HasTimeSpan ? player.NaturalDuration.TimeSpan.TotalSeconds : 0;
+                player.Close();
+                tcs.SetResult(sec);
+            };
+
+            player.MediaFailed += (s, e) =>
+            {
+                player.Close();
+                tcs.SetResult(-1);
+            };
+
+            player.Open(new Uri(path));
+            return tcs.Task;
         }
 
         private void MinimizeToTray(object sender, RoutedEventArgs e) => HideToTray();
